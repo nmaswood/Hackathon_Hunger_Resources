@@ -1,32 +1,61 @@
 import os, json, csv
 
-gjfname = 'comm-areas.geojson'
-fooddata = 'Food-Insecurity-Rates.csv'
-with open(gjfname) as f:
-    geodata = json.load(f)
+chi_geojsonFileName = 'comm-areas.geojson'
+cook_geojsonFileName = 'ca-cook-county.geojson'
+
+foodFileName = 'csa-data.csv'
+
+with open(chi_geojsonFileName) as f:
+    chi_geodata = json.load(f)
+with open(cook_geojsonFileName) as f1:
+    cook_geodata = json.load(f1)
 
 ca2data={}
-with open(fooddata) as f2:
+with open(foodFileName) as f2:
     foodreader = csv.DictReader(f2)
     for row in foodreader:
-        k = row['CA']
-        v = (row['A'], row['P'])
+        k = row['Community Area']
+        v = {
+            'Number': row['Number'],
+            'Rate': row['Rate']
+        }
         ca2data[k]=v
 
-for feature in geodata['features']:
+for feature in chi_geodata['features']:
     caname = feature['properties']['community'].title()
+
     if caname in ca2data:
-        temp = ca2data[caname][0].replace(',','')
-        a = int(temp)
-        p = float(ca2data[caname][1][:-1])/100
+        temp = ca2data[caname]['Number'].replace(',','')
+        number = int(temp)
+        rate = float(ca2data[caname]['Rate'][:-1])/100
     else:
-        a = 0
-        p = 0
+        number = 0
+        rate = 0
 
-    feature['properties']['rate']=p
-    feature['properties']['number']=a
-    print feature['properties']
+    feature['properties']['rate']=rate
+    feature['properties']['number']=number
 
-op = geodata
+for feature in cook_geodata['features']:
+    caname = feature['properties']['city'].title()
+    if caname in ca2data:
+        # print ca2data[caname]
+        temp = ca2data[caname]['Number'].replace(',','')
+        if isinstance(temp,str):
+            temp = 0
+        number = int(temp)
+        if isinstance(ca2data[caname]['Rate'][:-1],str):
+            rate = 0
+        else:
+            rate = float(ca2data[caname]['Rate'][:-1])/100
+    else:
+        number = 0
+        rate = 0
+
+    feature['properties']['rate']=rate
+    feature['properties']['number']=number
+    chi_geodata['features'].append(feature)
+
+
+finalOutput = chi_geodata
 with open('clean-output.geojson', 'w') as outfile:
-    json.dump(op, outfile)
+    json.dump(finalOutput, outfile)
