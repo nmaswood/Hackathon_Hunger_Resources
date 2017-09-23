@@ -16,16 +16,17 @@ with open(fooddata) as f2:
 for feature in geodata['features']:
     caname = feature['properties']['community'].title()
     if caname in ca2data:
-        a = ca2data[caname][0]
-        p = ca2data[caname][1]
+        temp = ca2data[caname][0].replace(',','')
+        a = int(temp)
+        p = float(ca2data[caname][1][:-1])/100
     else:
         a = 0
         p = 0
 
-    feature['properties']['p']=p
-    feature['properties']['a']=a
+    feature['properties']['rate']=p
+    feature['properties']['number']=a
     print feature['properties']
 
 op = geodata
-with open('output.geojson', 'w') as outfile:
+with open('clean-output.geojson', 'w') as outfile:
     json.dump(op, outfile)
