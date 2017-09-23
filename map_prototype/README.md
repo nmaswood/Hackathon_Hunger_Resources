@@ -9,22 +9,13 @@ on [deck.gl](http://deck.gl) website.
 npm install
 ```
 
-- Delete last line in `webpack.config.js`
-```
-module.exports = require('../webpack.config.local')(module.exports);
-```
-
 - Add [Mapbox access token](https://www.mapbox.com/help/define-access-token/)
 by run this command in your terminal.
+(ask chas for file)
+```
+source credentials.sh
+```
 
-```
-export MapboxAccessToken=<Your_Token>
-```
-
-or you can directly add it to `app.js`
-```
-// Set your mapbox token here
-const MAPBOX_TOKEN = <Your_Token>>;
 ```
 - Start the app.
 ```
@@ -32,5 +23,5 @@ npm start
 ```
 
 ### Data format
-Sample data is stored in [deck.gl Example Data](https://github.com/uber-common/deck.gl-data/tree/master/examples/3d-heatmap). To use your own data, checkout
+Sample data is ./heatmap-data.csv. To use your own data, checkout
 the [documentation of HexagonLayer](../../docs/layers/hexagon-layer.md)
