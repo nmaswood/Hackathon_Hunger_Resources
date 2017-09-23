@@ -1,0 +1,119 @@
+<script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+<!--[if lte IE 8]>
+  <link href='//api.tiles.mapbox.com/mapbox.js/v3.1.1/mapbox.ie.css' rel='stylesheet'>
+<![endif]-->
+<style>
+  #map {
+      position: relative;
+      height: 100%;
+      width: 100%;
+  }
+
+  .info {
+      padding: 6px 8px;
+      background: white;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+  }
+  .info h4 {
+      margin: 0 0 5px;
+      color: #777;
+  }
+
+  .legend {
+      font-size: 0.7em;
+      padding: 10px 20px;
+      line-height: 18px;
+      color: #555;
+      text-align: center;
+      /*width: 125px;*/
+  }
+  .legend-table {
+      margin: 5px auto 10px;;
+      border: none;
+      text-align: right;
+      border-collapse: collapse;
+  }
+  .legend-table td:first-child {
+      width: 18px;
+      opacity: 0.8;
+  }
+  .legend-table td:nth-child(2) {
+      padding-left: 5px;
+      text-align: left;
+  }
+
+  .leaflet-popup-content-wrapper {
+      border-radius: 5px;
+      opacity: 0.9;
+      font-weight: bold;
+  }
+  .leaflet-popup-close-button {
+      display: none;
+  }
+  #disclaimer h3 {
+      margin-top: 2em;
+  }
+
+</style>
+<div id='map'></div>
+
+<script ='text/javascript'>
+
+  L.mapbox.accessToken = 'pk.eyJ1IjoiY2hhc2poaW4iLCJhIjoiN1NtV1BEVSJ9.nyINRZ26JB99YWJde_su9Q';
+
+  var map = L.map('map', { attributionControl: false })
+
+  // move the attribution to the bottom left
+  L.control.attribution({position: 'bottomleft'}).addTo(map);
+
+  var legend = L.control({position: 'bottomright'});
+  legend.onAdd = function(map) {
+      var div = L.DomUtil.create('div','info legend');
+      div.id = 'map-legend';
+
+      L.mapbox.styleLayer('mapbox://styles/chasjhin/cj7xq5r0r55w12smeexlx191q')
+        .setZIndex(1)
+        .addTo(map);
+
+      legend_cluster = { 'title': '% Food Insecurity',
+        'values': [
+          {'color': 'rgb(255,255,255)', 'text': ['0%']},
+          {'color': 'rgb(255,0,0)', 'text': ['100%']}
+        ]};
+
+      updateLegend(legend_cluster, div);
+
+      return div;
+  }
+  legend.addTo(map);
+
+  var leaf_control = document.getElementsByClassName('leaflet-control-attribution')[0]
+  leaf_control.innerHTML = "Imagery &copy; MapBox | Map data &copy; OpenStreetMap contributors";
+
+  var overlays = [];
+
+  function updateLegend(legendInfo, curr_legend) {
+      var legendHTML = '<div class="legend-title">' + legendInfo.title + '</div>'
+                     + '<table class="legend-table">';
+
+      for(var i=0; i< legendInfo.values.length; i++) {
+          legendHTML += '<tr>'
+                      + '<td style="background:' + legendInfo.values[i].color + '"></td>'
+                      + '<td>' + legendInfo.values[i].text[0] + '</td>'
+                      + '</tr>';
+      }
+
+      legendHTML += '</table>';
+
+      curr_legend.innerHTML = legendHTML;
+  }
+
+  map.setView([41.841, -87.686], 10)
+     .addControl(L.mapbox.geocoderControl('civisanalytics.g809nkc6'));
+
+  map.options.minZoom = 7; // mapbox didn't generate anything lower than this
+  map.options.maxZoom = 16;
+</script>
