@@ -15,8 +15,8 @@ export default class DeckGLOverlay extends Component {
 
   static get defaultViewport() {
     return {
-      latitude: 49.254,
-      longitude: -123.13,
+      latitude: -1.415726,
+      longitude: 52.232395,
       zoom: 11,
       maxZoom: 16,
       pitch: 45,

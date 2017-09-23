@@ -11,7 +11,8 @@ const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
 
 // Source data GeoJSON
 //const DATA_URL = 'https://raw.githubusercontent.com/uber-common/deck.gl-data/master/examples/geojson/vancouver-blocks.json'; // eslint-disable-line
-const DATA_URL = './vancouver-blocks.json'; // eslint-disable-line
+//const DATA_URL = './vancouver-blocks.json'; // eslint-disable-line
+const DATA_URL = './comm-areas.geojson'; // eslint-disable-line
 
 const colorScale = r => [r * 255, 140, 200 * (1 - r)];
 
