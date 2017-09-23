@@ -38,12 +38,12 @@ for feature in chi_geodata['features']:
 for feature in cook_geodata['features']:
     caname = feature['properties']['city'].title()
     if caname in ca2data:
-        # print ca2data[caname]
+        print ca2data[caname]
         temp = ca2data[caname]['Number'].replace(',','')
-        if isinstance(temp,str):
+        if 'na' in temp:
             temp = 0
         number = int(temp)
-        if isinstance(ca2data[caname]['Rate'][:-1],str):
+        if 'na' in ca2data[caname]['Rate']:
             rate = 0
         else:
             rate = float(ca2data[caname]['Rate'][:-1])/100
