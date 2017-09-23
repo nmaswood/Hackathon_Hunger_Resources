@@ -69,7 +69,7 @@ gcfd_neighborhood = gcfd.groupby('Community Area')
 gcfd_neighborhood['Program Type'].value_counts()
 neighborhood_gb['STORE NAME'].value_counts()
 
-
+# Do df = make_long_table()
 def make_long_table():
 	df = pd.read_csv('GroceryStore.csv')
 	gcfd = pd.read_csv('gcfd_programs.csv', encoding = "ISO-8859-1")
@@ -84,13 +84,20 @@ def make_long_table():
 	socio_df_hardship = socio_df[['Community Area', 'HARDSHIP INDEX']]
 
 
+	# School Data
+	school_df = pd.read_csv('community_school_meal_participation.csv')
+	school_df['Community Area'] = school_df['Community Area'].str.upper()
+	school_df_sub = school_df[['Community Area', 'Normalized Eligible Children (#Eligible/Total # Eligible)', 'Percentage of children eligible for free and reduced price meals, 2016' ]]
+	school_df_sub = school_df_sub.rename(columns = {'Percentage of children eligible for free and reduced price meals, 2016': 'Reduced Meal Eligibiity'})
+	school_df_sub = school_df_sub.rename(columns = {'Normalized Eligible Children (#Eligible/Total # Eligible)': 'Normalized Reduced Meal Eligiblity'})
+
 	# subset
 	store_df= df[['COMMUNITY AREA NAME', 'STORE NAME', 'LATITUDE', 'LONGITUDE']]
 	store_df=store_df.rename(columns = {'COMMUNITY AREA NAME':'Community Area'})
 	gcfd_sub = gcfd[['Community Area', 'Program Name', 'Program Type', 'Activity Status']]
-	concated = pd.concat([store_df, gcfd_sub, socio_df_hardship], ignore_index=True)
+	concated = pd.concat([store_df, gcfd_sub, socio_df_hardship, school_df_sub], ignore_index=True)
 
-	df_reorder = concated[['Community Area', 'STORE NAME', 'Program Name', 'Program Type', 'Activity Status','HARDSHIP INDEX', 'LATITUDE', 'LONGITUDE']]
+	df_reorder = concated[['Community Area', 'STORE NAME', 'Program Name', 'Program Type', 'Activity Status','Reduced Meal Eligibiity', 'Normalized Reduced Meal Eligiblity', 'HARDSHIP INDEX', 'LATITUDE', 'LONGITUDE']]
 
 	return df_reorder
 
@@ -105,7 +112,6 @@ def filter_by_hardship_low(df, hardship_thresh):
 def filter_by_community_area(df, name):
 	community = df[df['Community Area'] == name]
 	return community
-
 
 
 
